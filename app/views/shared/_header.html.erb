@@ -13,6 +13,7 @@
 # with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
 %>
 
+<% if current_user %>
 <div class="header py-4">
   <div class="container">
     <div class="d-flex">
@@ -25,7 +26,6 @@
       <% end %>
 
       <div class="d-flex ml-auto">
-        <% if current_user %>
 
           <%= link_to home_page, class: "px-3 mx-1 mt-1 header-nav #{active_home}" do %>
             <i class="fas fa-home pr-1 "></i><span class="d-none d-sm-inline-block"><%= t("header.dropdown.home") %></span>
@@ -83,17 +83,10 @@
               <% end %>
             </div>
           </div>
-        <% elsif show_signin %>
-          <% allow_greenlight_accounts = allow_greenlight_accounts? %>
-          <% if allow_greenlight_accounts %>
-            <%= link_to t("login"), signin_path, :class => "btn btn-outline-primary mx-2 sign-in-button" %>
-          <% elsif Rails.configuration.loadbalanced_configuration %>
-            <%= link_to t("login"), omniauth_login_url(:bn_launcher), :class => "btn btn-outline-primary mx-2 sign-in-button", method: :post %>
-          <% else %>
-            <%= link_to t("login"), signin_path, :class => "btn btn-outline-primary mx-2 sign-in-button" %>
-          <% end %>
-        <% end %>
+    
       </div>
     </div>
   </div>
 </div>
+<% end %>
+<div style="text-align: center; padding: 30px;"><img src="<%= asset_path('mcxxi_logo.svg') %>" style="width: 112px; aspect-ratio: auto 112 / 103; height: 103px;"></div>

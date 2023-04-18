@@ -33,18 +33,19 @@
         <%= f.text_field :join_name,
             required: true,
             class: "form-control join-form",
-            placeholder: t("enter_your_name"),
+            placeholder: "Как к Вам обращаться?",
             value: "#{@name}",
             readonly: !current_user.nil?, 
             autofocus: true,
             maxlength: 99
             %>
-        <span class="input-group-append">
-          <button id="room-join" type="submit" class="btn btn-primary btn-sm px-7 form-control join-form">
-            <%= (!@room_running && @anyone_can_start) ? t("room.start") : t("room.join") %>
-          </button>
-        </span>
+        
       </div>
+      <div class="input-group-append" style="padding-top: 20px;">
+          <button id="room-join" type="submit" class="btn btn-primary btn-sm px-7 form-control join-form" style="background-color: #82bf31">
+            <%= (!@room_running && @anyone_can_start) ? t("room.join") : t("room.join") %>
+          </button>
+     </div>
       <% if display_joiner_consent %>
         <label class="custom-control custom-checkbox">
           <input id="joiner-consent" type="checkbox" class="custom-control-input" required>

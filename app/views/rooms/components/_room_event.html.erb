@@ -14,16 +14,16 @@
 %>
 
 <div class="background pb-9" room="<%= @room.uid %>" user="<%= current_user ? current_user.uid : "anonymous" %>" join-name="<%= @join_name %>">
-  <div class="container">
+  <div class="container" style="max-width: 540px";>
     <div class="row pt-9">
-      <div class="col-lg-12 col-sm-12">
+      <div class="col">
         <h4 class="text-left">Дистанционная консультация</h4>
         <h3 class="display-3 text-left mb-3 font-weight-200"><%= title(@room.name) %></h3>
-        <hr class="mt-2 float-left w-25">
+        <hr class="mt-2 float-left">
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="col">
         <%= yield %>
       </div>
     </div>
