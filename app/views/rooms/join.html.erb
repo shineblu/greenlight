@@ -30,6 +30,7 @@
         <%= f.hidden_field(:search, :value => params[:search])%>
         <%= f.hidden_field(:column, :value => params[:column])%>
         <%= f.hidden_field(:direction, :value => params[:direction])%>
+        <%= f.hidden_field(:moderator_access_code, :value => params[:mac])%>
         <%= f.text_field :join_name,
             required: true,
             class: "form-control join-form",
@@ -39,7 +40,6 @@
             autofocus: true,
             maxlength: 99
             %>
-        
       </div>
       <div class="input-group-append" style="padding-top: 20px;">
           <button id="room-join" type="submit" class="btn btn-primary btn-sm px-7 form-control join-form" style="background-color: #82bf31">
@@ -49,14 +49,9 @@
       <% if display_joiner_consent %>
         <label class="custom-control custom-checkbox">
           <input id="joiner-consent" type="checkbox" class="custom-control-input" required>
-          <h4 class="text-left text-danger mt-4 custom-control-label"><%= t("room.recording_present") %></h4>
+          <div class="text-left mt-4 custom-control-label">Даю свое согласие на запись консультации. Запись может включать мой голос и видео, если они были включены.</div>
         </label>
       <% end %>
-    <% end %>
-    <% if moderator_access_code_set && !valid_moderator_access_code %>
-      <!-- <hr class="mt-2 float-right w-100 moderator-code-hr"> -->
-      <label class="moderator-code-label form-label"><%= t("room.optional_moderator_access_code") %></label>
-      <%= render "rooms/components/enter_access_code_form", access_code_type: 'moderator' %>
     <% end %>
   <% else %>
     <%= render "rooms/components/enter_access_code_form", access_code_type: 'standard_access' %>
