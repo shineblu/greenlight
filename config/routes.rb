@@ -18,7 +18,10 @@
 
 Rails.application.routes.draw do
   get '/health_check', to: 'health_check#all'
-
+  scope '/greenapi' do
+    get '/all', to: 'greenapi#all', as: :all
+    post '/create_room', to: 'greenapi#create_room', as: :create_room
+  end
   # Error routes.
   match '/401', to: 'errors#unauthorized', via: :all, as: :unauthorized
   match '/404', to: 'errors#not_found', via: :all, as: :not_found
@@ -26,8 +29,8 @@ Rails.application.routes.draw do
 
   # Signin/Signup routes.
   get '/signin', to: 'sessions#signin', as: :signin
-  get '/signup', to: 'sessions#new', as: :signup
-  post '/signup', to: 'users#create', as: :create_user
+  #get '/signup', to: 'sessions#new', as: :signup
+  #post '/signup', to: 'users#create', as: :create_user
   match '/ldap_signin', to: 'sessions#ldap_signin', as: :ldap_signin, via: [:get, :post]
 
   # Redirect to terms page
@@ -77,11 +80,11 @@ Rails.application.routes.draw do
   resources :password_resets, only: [:new, :create, :edit, :update]
 
   # Account activation resources
-  scope '/account_activations' do
-    get '/', to: 'account_activations#show', as: :account_activation
-    get '/edit', to: 'account_activations#edit', as: :edit_account_activation
-    post '/resend', to: 'account_activations#resend', as: :resend_email
-  end
+  #scope '/account_activations' do
+    #get '/', to: 'account_activations#show', as: :account_activation
+    #get '/edit', to: 'account_activations#edit', as: :edit_account_activation
+    #post '/resend', to: 'account_activations#resend', as: :resend_email
+  #end
 
   # User resources.
   scope '/u' do
