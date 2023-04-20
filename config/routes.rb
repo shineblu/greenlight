@@ -18,10 +18,15 @@
 
 Rails.application.routes.draw do
   get '/health_check', to: 'health_check#all'
+
+  # Greenlight external API
   scope '/greenapi' do
     get '/all', to: 'greenapi#all', as: :all
     post '/create_room', to: 'greenapi#create_room', as: :create_room
+    post '/delete_room', to: 'greenapi#delete_room', as: :delete_room
+    post '/list_rooms', to: 'greenapi#list_rooms', as: :list_rooms
   end
+
   # Error routes.
   match '/401', to: 'errors#unauthorized', via: :all, as: :unauthorized
   match '/404', to: 'errors#not_found', via: :all, as: :not_found
