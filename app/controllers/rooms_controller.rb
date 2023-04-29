@@ -71,6 +71,12 @@ class RoomsController < ApplicationController
     @room_running = room_running?(@room.bbb_id)
     @shared_room = room_shared_with_user
 
+    @roomIsCancelled = @room_settings["roomIsCancelled"]
+    if ( !@roomIsCancelled.nil? && @roomIsCancelled )
+	render ("rooms/cancelled")
+	return
+    end
+
     # If its the current user's room
     if current_user && (@room.owned_by?(current_user) || @shared_room)
       # If the user is trying to access their own room but is not allowed to
@@ -108,6 +114,13 @@ class RoomsController < ApplicationController
   def join
     return redirect_to root_path,
       flash: { alert: I18n.t("administrator.site_settings.authentication.user-info") } if auth_required
+
+    @room_settings = JSON.parse(@room[:room_settings])
+    @roomIsCancelled = @room_settings["roomIsCancelled"]
+    if ( !@roomIsCancelled.nil? && @roomIsCancelled )
+	render ("rooms/cancelled")
+	return
+    end
 
     @shared_room = room_shared_with_user
 

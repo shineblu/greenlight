@@ -12,14 +12,19 @@ class GreenapiController < ApplicationController
 
   # GET /greenapi
   def all
-    response = "API is ready"
-    render plain: response
+    @response = "API is ready"
+    render plain: @response
   end
 
   # POST /greenapi/delete_room
   def delete_room
     begin
-        @room = Room.find_by!(id: params[:roomId])
+	if ( !params[:roomUid].nil? )
+	    @room = Room.find_by!(uid: params[:roomUid])
+	else
+    	    @room = Room.find_by!(id: params[:roomId])
+	end
+
         if ( @room.nil? ) 
           render plain: { error: "Room does not exists" }.to_json
 	  return
@@ -32,53 +37,100 @@ class GreenapiController < ApplicationController
         }
         render plain: result.to_json
     rescue => e
-	render plain: { error: "Room does not exists" }.to_json
+	render plain: { error: "Room does not exists (exception)" }.to_json
     end
   end
 
+  # POST /greenapi/cancel_room
+  def cancel_room
+    begin
+	if ( !params[:roomUid].nil? )
+	    @room = Room.find_by!(uid: params[:roomUid])
+	else
+    	    @room = Room.find_by!(id: params[:roomId])
+	end
+
+        if ( @room.nil? ) 
+          render plain: { error: "Room does not exists" }.to_json
+	  return
+        end
+
+	# Cancel action can be reverted, but if parameter is absent then it means room is cancelled
+        @cancelled = params[:cancelled]
+	if ( @cancelled.nil? || @cancelled.empty? )
+	    @cancelled = "1"
+	end
+
+	# Adjust room settings
+	@room_settings = JSON.parse(@room[:room_settings])
+	@room_settings["roomIsCancelled"] = (@cancelled == "1")
+        @room.room_settings = @room_settings.to_json
+	@room.save
+	
+        result = {
+	   result: "done",
+	   room: @room
+        }
+        render plain: result.to_json
+    rescue => e
+	render plain: { error: "Room does not exists (exception)" }.to_json
+    end
+  end
+
+
   # POST /greenapi/list_rooms
   def list_rooms
-    rooms = Room.where(deleted: false)
-    render plain: rooms.to_json
+    if ( !params[:roomUid].nil? )
+        @rooms = Room.where(uid: params[:roomUid])
+    elsif ( !params[:roomId].nil? )
+	@rooms = Room.where(id: params[:roomId])
+    else 
+	@rooms = Room.where(deleted: false)
+    end
+
+    render plain: @rooms.to_json
   end
 
   # POST /greenapi/create_room
   def create_room
-    ownerUserId = params[:ownerUserId]
-    if ( ownerUserId.nil? || ownerUserId.empty? ) 
+    @ownerUserId = params[:ownerUserId]
+    if ( @ownerUserId.nil? || @ownerUserId.empty? ) 
 	# attach to the first administrator
-        ownerUser = User.find_by(role_id: 2)
+        @ownerUser = User.find_by(role_id: 2)
     else
-        ownerUser = User.find_by(id: ownerUserId.to_i)
+        @ownerUser = User.find_by(id: @ownerUserId.to_i)
     end
 
-    moderatorAccessCode = params[:moderatorAccessCode]
-    if ( moderatorAccessCode.nil? ||  moderatorAccessCode.empty? )
-	moderatorAccessCode = generate_activation_code(8)
+    @moderatorAccessCode = params[:moderatorAccessCode]
+    if ( @moderatorAccessCode.nil? || @moderatorAccessCode.empty? )
+	@moderatorAccessCode = generate_activation_code(8)
     end
 
-    anyoneCanStart = params[:anyoneCanStart]
-    if ( anyoneCanStart.nil? || anyoneCanStart.empty? )
-	anyoneCanStart = "0"
+    @anyoneCanStart = params[:anyoneCanStart]
+    if ( @anyoneCanStart.nil? || @anyoneCanStart.empty? )
+	@anyoneCanStart = "0"
     end
 
-    recording = params[:recording]
-    if ( recording.nil? || recording.empty? )
-	recording = "1"
+    @recording = params[:recording]
+    if ( @recording.nil? || @recording.empty? )
+	@recording = "1"
     end
 
-    @room = Room.new(name: params[:roomName], access_code: '', moderator_access_code: moderatorAccessCode)
-    room_settings = {
+    @room = Room.new(name: params[:roomName], access_code: '', moderator_access_code: @moderatorAccessCode)
+    @room_settings = {
 	muteOnStart: true,
 	requireModeratorApproval: false,
-	anyoneCanStart: anyoneCanStart == "1",
+	anyoneCanStart: @anyoneCanStart == "1",
 	joinModerator: false,
-	recording: recording == "1"
+	recording: @recording == "1",
+	attachFilesUrl: params[:attachFilesUrl],
+	roomIsCancelled: false,
+	roomExpiresOn: params[:roomExpiresOn]
     }
 
-    @room.room_settings = room_settings.to_json
-    if ( !ownerUser.nil? )
-	@room.owner = ownerUser
+    @room.room_settings = @room_settings.to_json
+    if ( !@ownerUser.nil? )
+	@room.owner = @ownerUser
     end
 
     @room.save

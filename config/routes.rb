@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     post '/create_room', to: 'greenapi#create_room', as: :create_room
     post '/delete_room', to: 'greenapi#delete_room', as: :delete_room
     post '/list_rooms', to: 'greenapi#list_rooms', as: :list_rooms
+    post '/cancel_room', to: 'greenapi#cancel_room', as: :cancel_room
   end
 
   # Error routes.

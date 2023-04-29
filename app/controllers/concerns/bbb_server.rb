@@ -62,6 +62,7 @@ module BbbServer
 
   # Creates a meeting on the BigBlueButton server.
   def start_session(room, options = {})
+    @room_settings = JSON.parse(room[:room_settings])
     create_options = {
       record: options[:record].to_s,
       logoutURL: options[:meeting_logout_url] || '',
@@ -71,8 +72,12 @@ module BbbServer
       "meta_#{META_LISTED}": options[:recording_default_visibility] || false,
       "meta_bbb-origin-version": Greenlight::Application::VERSION,
       "meta_bbb-origin": "Greenlight",
-      "meta_bbb-origin-server-name": options[:host]
+      "meta_bbb-origin-server-name": options[:host],
+      "meta_attachFilesUrl": @room_settings["attachFilesUrl"]
     }
+
+    logger.info "Start session with options: "
+    logger.info create_options.to_json
 
     create_options[:muteOnStart] = options[:mute_on_start] if options[:mute_on_start]
     create_options[:guestPolicy] = "ASK_MODERATOR" if options[:require_moderator_approval]
