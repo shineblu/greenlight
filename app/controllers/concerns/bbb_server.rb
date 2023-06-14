@@ -47,6 +47,8 @@ module BbbServer
     # Create the meeting, even if it's running
     start_session(room, options)
 
+    @room_settings = JSON.parse(room[:room_settings])
+
     # Determine the password to use when joining.
     password = options[:user_is_moderator] ? room.moderator_pw : room.attendee_pw
 
@@ -56,13 +58,18 @@ module BbbServer
     join_opts[:join_via_html5] = true
     join_opts[:avatarURL] = options[:avatarURL] if options[:avatarURL].present?
     join_opts[:createTime] = room.last_session.to_datetime.strftime("%Q") if room.last_session
+    # Custom parameters (can be retrieved in BBB using getMeetingInfo
+    # <customdata><attachFilesUrl>value</attachFilesUrl></customdata>
+    join_opts["userdata-attachFilesUrl"] = @room_settings["attachFilesUrl"]
+
+    logger.info "User join options: "
+    logger.info join_opts.to_json
 
     bbb_server.join_meeting_url(room.bbb_id, name, password, join_opts)
   end
 
   # Creates a meeting on the BigBlueButton server.
   def start_session(room, options = {})
-    @room_settings = JSON.parse(room[:room_settings])
     create_options = {
       record: options[:record].to_s,
       logoutURL: options[:meeting_logout_url] || '',
@@ -72,12 +79,8 @@ module BbbServer
       "meta_#{META_LISTED}": options[:recording_default_visibility] || false,
       "meta_bbb-origin-version": Greenlight::Application::VERSION,
       "meta_bbb-origin": "Greenlight",
-      "meta_bbb-origin-server-name": options[:host],
-      "meta_attachFilesUrl": @room_settings["attachFilesUrl"]
+      "meta_bbb-origin-server-name": options[:host]
     }
-
-    logger.info "Start session with options: "
-    logger.info create_options.to_json
 
     create_options[:muteOnStart] = options[:mute_on_start] if options[:mute_on_start]
     create_options[:guestPolicy] = "ASK_MODERATOR" if options[:require_moderator_approval]

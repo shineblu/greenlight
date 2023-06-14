@@ -77,6 +77,48 @@ class GreenapiController < ApplicationController
     end
   end
 
+  # POST /greenapi/room_records
+  def room_records
+    begin
+	if ( !params[:roomUid].nil? )
+	    @room = Room.find_by!(uid: params[:roomUid])
+	else
+    	    @room = Room.find_by!(id: params[:roomId])
+	end
+
+        if ( @room.nil? ) 
+          render plain: { error: "Room does not exists" }.to_json
+	  return
+        end
+        
+	# get room records
+	all_recordings = get_recordings(@room.bbb_id)
+	filtered_recordings = []
+
+	all_recordings[:recordings].each do |r|
+	    next if r.key?(:error)
+	    next if !r[:published] || r[:rawSize] == 0
+	
+	    recordStart = r[:startTime].to_datetime
+	    recordEnd = r[:endTime].to_datetime
+	    recordLength = ((recordEnd - recordStart) * 24 * 60).to_i
+	    recordItem = {
+		minutes: recordLength,
+		url: r[:playback][:format][:url].strip
+	    }
+	    filtered_recordings.push(recordItem)
+	end
+	
+        result = {
+	   result: "done",
+	   room: @room,
+	   records: filtered_recordings
+        }
+        render plain: result.to_json
+    rescue => e
+	render plain: { error: "Room does not exists (exception)" }.to_json
+    end
+  end
 
   # POST /greenapi/list_rooms
   def list_rooms
