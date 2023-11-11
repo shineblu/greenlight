@@ -61,6 +61,7 @@ module BbbServer
     # Custom parameters (can be retrieved in BBB using getMeetingInfo
     # <customdata><attachFilesUrl>value</attachFilesUrl></customdata>
     join_opts["userdata-attachFilesUrl"] = @room_settings["attachFilesUrl"]
+    join_opts["userdata-screenshare"] = @room_settings["screenshare"]
 
     logger.info "User join options: "
     logger.info join_opts.to_json

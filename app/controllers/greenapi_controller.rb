@@ -158,6 +158,11 @@ class GreenapiController < ApplicationController
 	@recording = "1"
     end
 
+    @screenshare = params[:screenshare]
+    if ( @screenshare.nil? || @screenshare.empty? )
+	@screenshare = "0"
+    end
+
     @room = Room.new(name: params[:roomName], access_code: '', moderator_access_code: @moderatorAccessCode)
     @room_settings = {
 	muteOnStart: true,
@@ -165,6 +170,7 @@ class GreenapiController < ApplicationController
 	anyoneCanStart: @anyoneCanStart == "1",
 	joinModerator: false,
 	recording: @recording == "1",
+	screenshare: @screenshare == "1",
 	attachFilesUrl: params[:attachFilesUrl],
 	roomIsCancelled: false,
 	roomExpiresOn: params[:roomExpiresOn]
