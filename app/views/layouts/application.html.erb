@@ -16,24 +16,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% if Rails.configuration.google_analytics %>
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-      <script async src="<%= google_analytics_url %>"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', "<%= ENV["GOOGLE_ANALYTICS_TRACKING_ID"] %>");
-      </script>
-    <% end %>
-
-    <title><%= yield(:page_title).present? ? yield(:page_title) : t("bigbluebutton") %></title>
-    <meta property="og:title" content="<%= yield(:page_title).present? ? yield(:page_title) : t("bigbluebutton") %>" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content=<%=user_locale(@room&.owner)%> />
-    <meta property="og:description" content="<%= yield(:page_desc).present? ? yield(:page_desc) : t("landing.about", href: "Greenlight", locale: :en) %>" />
-    <meta property="og:url" content="<%= request.base_url %>" />
+    <title>Дистанционные консультации - МЦ21 Век</title>
+    <meta property="og:title" content="Дистанционные консультации - МЦ21 Век" />
     <meta property="og:image" content="<%= logo_image %>" />
     <meta name="viewport" content= "width=device-width, user-scalable=no">
     <%= csrf_meta_tags %>
@@ -63,18 +47,7 @@
   <body class="app-background" data-controller="<%= controller_name %>" data-action="<%= action_name %>" data-relative-root="<%= Rails.configuration.relative_url_root || "/" %>">
     <%= render "shared/header" %>
 
-    <div class="wrapper">
-      <% if bigbluebutton_endpoint_default? %>
-        <div class="alert alert-icon alert-danger text-center mb-0">
-          <div class="flash alert d-inline">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p class="d-inline"><%= t("test_install",
-              href: link_to(t("docs").downcase, "http://docs.bigbluebutton.org/install/greenlight-v2.html#2-install-greenlight", target: "_blank", rel: "noopener")
-            ).html_safe %>
-          </div>
-        </div>
-      <% end %>
-
+    <div class="wrapper" style="min-height: auto;">
       <% unless Rails.configuration.banner_message.blank? %>
         <div class="alert alert-icon alert-danger text-center mb-0">
           <div class="flash alert d-inline">
@@ -84,7 +57,6 @@
       <% end %>
 
       <%= render 'shared/flash_messages' unless flash.empty? %>
-
       <%= yield %>
     </div>
 

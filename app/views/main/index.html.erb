@@ -17,15 +17,16 @@
   <div class="container pt-9 pb-8">
     <div class="row">
       <div class="col-md-12 col-sm-12 text-center">
-        <h1 id="main-text" class="display-4 mb-4"> <%= t("landing.welcome").html_safe %></h1>
-        <p class="lead offset-lg-2 col-lg-8 col-sm-12 "><%= t("landing.about", href: link_to(t("greenlight"), "https://bigbluebutton.org/2018/07/09/greenlight-2-0/", target: "_blank", rel: "noopener")).html_safe %></p>
-        <%= link_to "https://youtu.be/Hso8yLzkqj8", target: "_blank" do %>
-          <h4><%= t("landing.video") %> <i class="far fa-play-circle ml-1"></i></h4>
-        <% end %>
+        <p class="lead offset-lg-2 col-lg-8 col-sm-12 ">Добро пожаловать в сервис дистанционных консультаций Медицинского центра 21 Век.
+	    <br><br>
+	    Для подключения к конференции используйте ссылку с кодом, которую мы направили Вам на почту и в Личный кабинет (раздел Предстоящие приемы).
+	    <br><br>
+	    Для комфортного получения консульации, убедитесь, что Вы подключены к WiFi, либо к другой высокоскоростной мобильной сети (4G, LTE) с хорошим уровнем сигнала.
+	    Мы рекомендуем использовать браузер Google Chrome, Mozilla Firefox, либо Safari для правильной работы самой программы.
+	    <br><br><br>
+	    С нетерпением ждем Вас на предстоящей консультации!
+	</p>
       </div>
-
     </div>
   </div>
 </div>
-
-<%= render "main/components/features" %>

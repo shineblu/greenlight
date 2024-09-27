@@ -14,28 +14,19 @@
 %>
 
 <div class="background pb-9" room="<%= @room.uid %>" user="<%= current_user ? current_user.uid : "anonymous" %>" join-name="<%= @join_name %>">
-  <div class="container">
+  <div class="container" style="max-width: 540px";>
     <div class="row pt-9">
-      <div class="col-lg-12 col-sm-12">
-        <h4 class="text-left"><%= t("room.invited") %></h4>
-        <h1 class="display-3 text-left mb-3 font-weight-400"><%= title(@room.name) %></h1>
-        <hr class="mt-2 float-left w-25">
+      <div class="col">
+        <h4 class="text-left">Дистанционная консультация</h4>
+        <h2 class="text-left mb-3 font-weight-light"><%= title(@room.name) %></h2>
+        <hr class="mt-2 float-left">
       </div>
     </div>
-
     <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
-        <span class="avatar"><%= @room.owner.name.first %></span>
-        <h5 id="room-owner-name" class="font-weight-normal ml-4 mt-3 d-inline-block"><%= @room.owner.name %> (<%= t("room.owner") %>)</h5>
-      </div>
-
-      <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="col">
         <%= yield %>
       </div>
     </div>
   </div>
 </div>
 
-<% if render_recordings && !hide_recording_tables %>
-  <%= render "shared/sessions", recordings: @public_recordings, pagy: @pagy, only_public: true, user_recordings: false, title: t("room.recordings") %>
-<% end %>

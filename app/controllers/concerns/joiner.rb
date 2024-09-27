@@ -60,7 +60,9 @@ module Joiner
   def join_room(opts)
     @room_settings = JSON.parse(@room[:room_settings])
 
-    moderator_privileges = @room.owned_by?(current_user) || valid_moderator_access_code(session[:moderator_access_code])
+    #moderator_privileges = @room.owned_by?(current_user) || valid_moderator_access_code(session[:moderator_access_code])
+    moderator_privileges = @room.owned_by?(current_user) || valid_moderator_access_code(params[@room.invite_path][:moderator_access_code])
+
     if room_running?(@room.bbb_id) || room_setting_with_config("anyoneCanStart") || moderator_privileges
 
       # Determine if the user needs to join as a moderator.

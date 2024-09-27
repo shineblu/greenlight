@@ -1,5 +1,7 @@
 <img width="1012" alt="bbb-greenlight-banner" src="https://user-images.githubusercontent.com/1273169/141143584-684766cf-8633-4d66-b35e-f134a368e4c8.png">
-
+# MCXXI
+This is customized version for Greenlight/v2 user interface for BigBlueButton
+Is used for MCXXI LK project
 
 # Greenlight
 
